@@ -22,7 +22,10 @@ const Sidebar = () => {
                                 const isActive = link.route === pathname
                                 return(
                                     <li key={link?.route} className={`sidebar-nav_element group ${isActive? 'bg-purple-gradient text-white' : 'text-gray-700'}`}>
-                                        {link.label}
+                                        <Link href={link?.route} className='sidebar-link'>
+                                        <Image src={link?.icon} alt='logo' width={24} height={24} className={` ${isActive && 'brightness-200'} `} />
+                                        {link?.label}
+                                        </Link>
                                     </li>
                                 )
                             })}
