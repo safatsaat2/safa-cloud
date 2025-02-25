@@ -7,26 +7,26 @@ interface MongooseConnection {
   promise: Promise<Mongoose> | null;
 }
 
-let cached: MongooseConnection = (global as any).mongoose;
+// TypeScript-safe way to store in global scope
+const globalWithMongoose = global as unknown as { mongoose?: MongooseConnection };
 
-if (!cached) {
-  cached = (global as any).mongoose = {
-    conn: null,
-    promise: null,
-  };
-}
-export const connectToDatabase = async () => {
+const cached: MongooseConnection = globalWithMongoose.mongoose ?? {
+  conn: null,
+  promise: null,
+};
+
+// Ensure global.mongoose is set
+globalWithMongoose.mongoose = cached;
+
+export const connectToDatabase = async (): Promise<Mongoose> => {
   if (cached.conn) return cached.conn;
-
   if (!MONGODB_URL) throw new Error("Missing MONGODB_URL");
 
-  cached.promise =
-    cached.promise ||
-    mongoose.connect(MONGODB_URL, {
-      dbName: "safa-cloud",
-      bufferCommands: false,
-    });
-    cached.conn = await cached.promise;
+  cached.promise ??= mongoose.connect(MONGODB_URL, {
+    dbName: "safa-cloud",
+    bufferCommands: false,
+  });
 
-    return cached.conn;
+  cached.conn = await cached.promise;
+  return cached.conn;
 };
