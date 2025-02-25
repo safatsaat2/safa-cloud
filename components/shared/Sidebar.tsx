@@ -1,6 +1,6 @@
 "use client"
 import { navLinks } from '@/constants';
-import { SignedOut } from '@clerk/clerk-react';
+import { SignedOut, UserButton } from '@clerk/clerk-react';
 import { SignedIn } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -31,6 +31,9 @@ const Sidebar = () => {
                                     </li>
                                 )
                             })}
+                            <li className="flex-center cursor-pointer gap-2 p4">
+                                <UserButton afterSwitchSessionUrl='/' showName/>
+                            </li>
                         </ul>
                     </SignedIn>
                     <SignedOut>
